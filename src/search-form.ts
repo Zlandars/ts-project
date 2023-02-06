@@ -1,8 +1,8 @@
 import { renderBlock } from './lib.js';
 import { DateTime } from "./luxon.js";
 
-export function renderSearchFormBlock (dateArrival?, dateDeparture?) {
-  const nowTime = DateTime.now();
+export function renderSearchFormBlock (dateArrival?:Date | DateTime, dateDeparture?:Date | DateTime):void {
+  const nowTime:any = DateTime.now();
   const dateArrivals = typeof dateArrival != "undefined" ? dateArrival : nowTime.plus({days:1});
   const dateDepart = typeof dateDeparture != "undefined"
       ? dateDeparture
@@ -19,7 +19,7 @@ export function renderSearchFormBlock (dateArrival?, dateDeparture?) {
         <div class="row">
           <div>
             <label for="city">Город</label>
-            <input id="city" type="text" disabled value="Санкт-Петербург" />
+            <input id="city" type="text" value="Санкт-Петербург" />
             <input type="hidden" disabled value="59.9386,30.3141" />
           </div>
           <!--<div class="providers">
@@ -38,10 +38,10 @@ export function renderSearchFormBlock (dateArrival?, dateDeparture?) {
           </div>
           <div>
             <label for="max-price">Макс. цена суток</label>
-            <input id="max-price" type="text" value="" name="price" class="max-price" />
+            <input id="max-price" type="text" value="10000" name="price" class="max-price" required />
           </div>
           <div>
-            <div><button>Найти</button></div>
+            <div><button type="submit">Найти</button></div>
           </div>
         </div>
       </fieldset>

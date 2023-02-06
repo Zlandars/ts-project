@@ -1,4 +1,5 @@
 import { renderBlock } from './lib.js'
+import {Hotel} from "./store/domain/hotel";
 
 export function renderSearchStubBlock () {
   renderBlock(
@@ -12,7 +13,7 @@ export function renderSearchStubBlock () {
   )
 }
 
-export function renderEmptyOrErrorSearchBlock (reasonMessage) {
+export function renderEmptyOrErrorSearchBlock (reasonMessage:string):void {
   renderBlock(
     'search-results-block',
     `
@@ -23,66 +24,47 @@ export function renderEmptyOrErrorSearchBlock (reasonMessage) {
     `
   )
 }
-
-export function renderSearchResultsBlock () {
-  renderBlock(
+export function renderSearchResultsBlock (object:Hotel[], sortOption:string) {
+    renderBlock(
     'search-results-block',
     `
-    <div class="search-results-header">
-        <p>Результаты поиска</p>
-        <div class="search-results-filter">
-            <span><i class="icon icon-filter"></i> Сортировать:</span>
-            <select>
-                <option selected="">Сначала дешёвые</option>
-                <option selected="">Сначала дорогие</option>
-                <option>Сначала ближе</option>
-            </select>
-        </div>
-    </div>
     <ul class="results-list">
-      <li class="result">
+      ${object.map(item=>{
+          return `
+        <li class="result">
         <div class="result-container">
           <div class="result-img-container">
-            <div class="favorites active"></div>
-            <img class="result-img" src="./img/result-1.png" alt="">
+            <div class="favorites" id="${item.origId}"></div>
+            <img class="result-img" src="${item.image}" alt="">
           </div>	
           <div class="result-info">
             <div class="result-info--header">
-              <p>YARD Residence Apart-hotel</p>
-              <p class="price">13000&#8381;</p>
+              <p>${item.name}</p>
+              <p class="price">${item.price}&#8381;</p>
             </div>
-            <div class="result-info--map"><i class="map-icon"></i> 2.5км от вас</div>
-            <div class="result-info--descr">Комфортный апарт-отель в самом сердце Санкт-Петербрга. К услугам гостей номера с видом на город и бесплатный Wi-Fi.</div>
+            <div class="result-info--map"><i class="map-icon"></i> ${typeof item.remoteness != 'string' ? item.remoteness : '0'} км от вас</div>
+            <div class="result-info--descr">
+                ${item.description}
+            </div>
             <div class="result-info--footer">
               <div>
-                <button>Забронировать</button>
+                <button class="booking" id="${item.origId}">Забронировать</button>
               </div>
             </div>
           </div>
         </div>
       </li>
-      <li class="result">
-        <div class="result-container">
-          <div class="result-img-container">
-            <div class="favorites"></div>
-            <img class="result-img" src="./img/result-2.png" alt="">
-          </div>	
-          <div class="result-info">
-            <div class="result-info--header">
-              <p>Akyan St.Petersburg</p>
-              <p class="price">13000&#8381;</p>
-            </div>
-            <div class="result-info--map"><i class="map-icon"></i> 1.1км от вас</div>
-            <div class="result-info--descr">Отель Akyan St-Petersburg с бесплатным Wi-Fi на всей территории расположен в историческом здании Санкт-Петербурга.</div>
-            <div class="result-info--footer">
-              <div>
-                <button>Забронировать</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
+      `
+    })}
     </ul>
     `
-  )
+  );
+    let filter = <HTMLInputElement>document.querySelector('.search-results-filter select');
+    if(filter) {
+        filter.value = sortOption;
+        filter.addEventListener('change', ()=>{
+            //  Не получилось. Если кто-то это посмотрит, то исправьте и объясните
+            // search(object,()=>{},sortOption)
+        })
+    }
 }
